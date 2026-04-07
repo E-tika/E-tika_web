@@ -1,0 +1,107 @@
+/* --- 既存のスタイルを調整 --- */
+
+.contact-notice {
+    margin-bottom: 40px; /* 少し余白を広げて見やすく */
+    line-height: 1.8;
+}
+
+.highlight-text {
+    color: #e53e3e; /* 画像のような赤色 */
+    font-weight: bold;
+    display: block; /* 一行で目立たせる */
+    margin-bottom: 15px;
+}
+
+/* リンク全般の装飾 */
+.contact-notice a {
+    color: #005bac;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.contact-notice a:hover {
+    text-decoration: underline;
+}
+
+/* --- 【新設】メール・必須項目用のスタイル --- */
+
+/* メールアドレスを目立たせるボックス */
+.mail-box {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 25px;
+    border-radius: 12px;
+    text-align: center;
+    margin: 30px 0;
+}
+
+.mail-address {
+    font-size: 1.25rem;
+    word-break: break-all; /* スマホでアドレスがはみ出さないように */
+}
+
+/* 必須項目のリスト（カード風） */
+.info-required {
+    background-color: #ffffff;
+    border-left: 5px solid #005bac; /* 左側にアクセントライン */
+    padding: 20px;
+    margin: 30px 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.info-required h3 {
+    margin-top: 0;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+}
+
+.info-required ul {
+    list-style: none;
+    padding-left: 5px;
+}
+
+.info-required li {
+    margin-bottom: 8px;
+}
+
+/* メールアドレスの強調 */
+.mail-address {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+/* コピーボタンの基本スタイル */
+.btn-copy {
+    background-color: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e0;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+.btn-copy:hover {
+    background-color: #e2e8f0;
+    border-color: #94a3b8;
+}
+
+/* コピーした瞬間のスタイル（青っぽくする） */
+.btn-copy.copied {
+    background-color: #005bac;
+    color: white;
+    border-color: #005bac;
+}
+
+.mail-box {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    margin: 30px 0;
+}
