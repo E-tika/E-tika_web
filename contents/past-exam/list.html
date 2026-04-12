@@ -7,10 +7,20 @@
     <link rel="stylesheet" href="style.css">
     
     <script>
-        // 「合言葉」がない場合は、強制的にログイン画面へ戻す
         if (sessionStorage.getItem('isLoggedIn') !== 'true') {
             alert('ログインが必要です');
             window.location.href = 'index.html';
+        }
+
+        // プレビューを切り替える関数
+        function previewPdf(url, year) {
+            const iframe = document.getElementById('pdf-preview-frame');
+            const title = document.getElementById('preview-title');
+            iframe.src = url;
+            title.innerText = year + " のプレビュー";
+            
+            // スマホ等で見づらい場合に備え、プレビューエリアまでスクロール
+            document.getElementById('preview-container').scrollIntoView({ behavior: 'smooth' });
         }
     </script>
 </head>
@@ -29,42 +39,50 @@
             <a href="../seminar-info/index.html">ゼミ紹介</a>
             <a href="../contact/index.html">お問い合わせ</a>
         </nav>
-    </header>
+        </header>
 
-    <main class="container">
-        <h1>過去問アーカイブ</h1>
-        <p>PDFをクリックすると別タブで開きます。</p>
+    <main class="container past-exam-layout">
+        <div class="list-section">
+            <h1>過去問アーカイブ</h1>
+            <p>年度を選択すると右側にプレビューが表示されます。</p>
 
-        <div class="exam-grid">
-            <div class="exam-item">
-                <div class="exam-info">
-                    <span class="exam-year">2025年度</span>
+            <div class="exam-vertical-list">
+                <div class="exam-item-row" onclick="previewPdf('exam_pdf/exam2025.pdf', '2025年度')">
+                    <span class="exam-year">2025年度 期末試験</span>
+                    <div class="action-buttons">
+                        <button class="view-btn">プレビュー</button>
+                        <a href="exam_pdf/exam2025.pdf" target="_blank" class="download-btn" onclick="event.stopPropagation();">別タブで開く</a>
+                    </div>
                 </div>
-                <a href="exam_pdf/exam2025.pdf" target="_blank" class="view-btn">PDFを閲覧</a>
-            </div>
 
-            <div class="exam-item">
-                <div class="exam-info">
-                    <span class="exam-year">2024年度</span>
+                <div class="exam-item-row" onclick="previewPdf('exam_pdf/exam2024.pdf', '2024年度')">
+                    <span class="exam-year">2024年度 期末試験</span>
+                    <div class="action-buttons">
+                        <button class="view-btn">プレビュー</button>
+                        <a href="exam_pdf/exam2024.pdf" target="_blank" class="download-btn" onclick="event.stopPropagation();">別タブで開く</a>
+                    </div>
                 </div>
-                <a href="exam_pdf/exam2024.pdf" target="_blank" class="view-btn">PDFを閲覧</a>
-            </div>
 
-            <div class="exam-item">
-                <div class="exam-info">
-                    <span class="exam-year">2023年度</span>
+                <div class="exam-item-row" onclick="previewPdf('exam_pdf/exam2023.pdf', '2023年度')">
+                    <span class="exam-year">2023年度 期末試験</span>
+                    <div class="action-buttons">
+                        <button class="view-btn">プレビュー</button>
+                        <a href="exam_pdf/exam2023.pdf" target="_blank" class="download-btn" onclick="event.stopPropagation();">別タブで開く</a>
+                    </div>
                 </div>
-                <a href="exam_pdf/exam2023.pdf" target="_blank" class="view-btn">PDFを閲覧</a>
             </div>
+        </div>
 
-            <div class="exam-item">
-                <div class="exam-info">
-                    <span class="exam-year">2022年度</span>
-                </div>
-                <a href="exam_pdf/exam2022.pdf" target="_blank" class="view-btn">PDFを閲覧</a>
+        <div id="preview-container" class="preview-section">
+            <h3 id="preview-title">年度を選択してください</h3>
+            <div class="iframe-wrapper">
+                <iframe id="pdf-preview-frame" src="" frameborder="0"></iframe>
             </div>
-            
-            </div>
+        </div>
     </main>
+
+    <footer class="main-footer">
+        <p>&copy; 2026 経済学部同好会常任委員会</p>
+    </footer>
 </body>
 </html>

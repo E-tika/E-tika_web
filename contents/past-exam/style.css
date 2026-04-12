@@ -1,4 +1,4 @@
-/* ログイン画面のカード */
+/* ログイン画面のカード（既存のものを活かしつつ追加） */
 .login-card {
     max-width: 400px;
     margin: 40px auto;
@@ -7,37 +7,137 @@
     border-radius: 10px;
     background-color: #f8fafc;
     box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    text-align: center; /* ボタンなどを中央寄せに */
 }
 
 .input-group {
+    display: flex;         /* 横並びにする */
+    align-items: center;   /* 縦方向の真ん中を合わせる */
     margin-bottom: 20px;
 }
 
 .input-group label {
-    display: block;
-    margin-bottom: 8px;
+    width: 100px;          /* ★ここを固定することでBOXの開始位置が揃います */
+    flex-shrink: 0;        /* 幅が狭まらないように固定 */
+    text-align: left;      /* ラベルの文字を左寄せ */
     font-weight: bold;
 }
 
 .input-group input {
-    width: 100%;
+    flex-grow: 1;          /* 残りの幅をすべてBOXが使う */
     padding: 10px;
     border: 1px solid #cbd5e0;
     border-radius: 5px;
     font-size: 1rem;
 }
 
-.error-text {
-    color: #e53e3e;
-    font-size: 0.9rem;
-    margin-top: 15px;
-    text-align: center;
+/* 入力欄のフォーカス時の色（青く光らせると親切） */
+.input-group input:focus {
+    outline: none;
+    border-color: #3182ce;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
 }
 
-/* 過去問表示のグリッド */
-.exam-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
-    margin-top: 30px;
+/* ヘルパーリンク（登録・再設定用） */
+.auth-helper-links {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #e2e8f0;
+    text-align: left; /* リンクは左寄せが見やすい */
+}
+
+.auth-helper-links p {
+    font-size: 0.85rem;
+    color: #4a5568;
+    margin: 8px 0;
+}
+
+.auth-helper-links a {
+    color: #3182ce;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.auth-helper-links a:hover {
+    text-decoration: underline;
+}
+
+/* 警告ボックス（赤い注意書き部分） */
+.warning-box {
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 15px;
+    background-color: #fff5f5;
+    border-radius: 8px;
+    border-left: 4px solid #f56565;
+}
+
+/* レイアウト：左にリスト、右にプレビュー */
+.past-exam-layout {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+}
+
+.list-section {
+    flex: 1; /* リスト側の幅 */
+}
+
+.preview-section {
+    flex: 2; /* プレビュー側の幅（広め） */
+    position: sticky;
+    top: 100px; /* スクロールしてもプレビューがついてくるように */
+    background: #fff;
+    padding: 15px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    height: 80vh;
+}
+
+/* 縦並びのリストアイテム */
+.exam-item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.exam-item-row:hover {
+    background: #edf2f7;
+    transform: scale(1.01);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+/* プレビュー用iframe */
+.iframe-wrapper {
+    height: calc(100% - 40px);
+    width: 100%;
+}
+
+#pdf-preview-frame {
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+}
+
+/* スマホ対応：画面が狭いときは縦に並べる */
+@media (max-width: 900px) {
+    .past-exam-layout {
+        flex-direction: column;
+    }
+    .preview-section {
+        width: 100%;
+        height: 500px;
+        position: static;
+    }
 }

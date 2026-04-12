@@ -27,20 +27,38 @@
     <main class="container">
         <section id="auth-section">
             <h1>過去試験の閲覧について</h1>
-            <p>このページは経済学部生専用の過去問閲覧用のページです。<br>
-                学生番号を入力することで閲覧いただけます。<br>
-                他学部の方は、お問い合わせフォームから閲覧申請をしてください。<br>
-                <span style="color: red;">本ページは長期にわたって来訪者がいない場合、停止している場合がございます。<br>
-                    ページが開けない等のトラブルがあった際は、お問い合わせください。</span>
+            <p>このページは経済学部生専用の過去問閲覧ページです。<br>
+                <strong>学籍番号</strong>と<strong>登録したパスワード</strong>を入力してログインしてください。
             </p>
             
             <div class="login-card">
                 <div class="input-group">
-                    <label>学生番号</label>
-                    <input type="text" id="student-id-input" placeholder="例: ハイフンなし10桁">
+                    <label for="student-id-input">学籍番号</label>
+                    <input type="text" id="student-id-input" placeholder="例: 0400XXXXXX">
                 </div>
+
+                <div class="input-group">
+                    <label for="password-input">パスワード</label>
+                    <input type="password" id="password-input" placeholder="パスワードを入力">
+                </div>
+
                 <button onclick="handleLogin()" class="btn-blue">ログイン</button>
-                <p id="error-message" class="error-text" style="display: none;">※学生番号が登録されていません。</p>
+                
+                <p id="error-message" class="error-text" style="display: none;"></p>
+
+                <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+                
+                <div class="auth-helper-links">
+                    <p>初めての方：<a href="https://forms.gle/c5DinY2Zb8FaVTHBA" target="_blank">パスワードを登録する</a></p>
+                    <p>忘れた方：<a href="https://forms.gle/hyNZuhrxv9xJ9o418" target="_blank">再設定はこちら</a></p>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <p style="color: red; font-size: 0.9em;">
+                    ※本ページは長期にわたって来訪者がいない場合、停止している場合がございます。<br>
+                    ページが開けない等のトラブルがあった際は、お問い合わせください。
+                </p>
             </div>
         </section>
 
@@ -55,7 +73,7 @@
 
     <script src="past-exam.js"></script>
     <footer class="main-footer">
-    <p>&copy; 2026 経済学部同好会常任委員会</p>
-</footer>
+        <p>&copy; 2026 経済学部同好会常任委員会</p>
+    </footer>
 </body>
 </html>
