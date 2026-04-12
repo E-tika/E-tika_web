@@ -1,4 +1,0 @@
-Supabase
-Organization: E-tika
-Project name: E-tika web site
-Password: 7jfx5gPro4IV5vwh
