@@ -35,7 +35,7 @@ async function updateView(selectedDate) {
 }
 
 function renderTimetable(reservations) {
-    // （時間リスト作成部分は変更なし）
+    // 05:30から22:00まで15分刻みの時間リストを作成
     const timeSlots = [];
     for (let h = 5; h <= 21; h++) {
         for (let m = 0; m < 60; m += 15) {
@@ -48,20 +48,23 @@ function renderTimetable(reservations) {
     let html = `<table><thead><tr><th>時間</th><th>購読室 1</th><th>購読室 2</th><th>購読室 3</th></tr></thead><tbody>`;
 
     timeSlots.forEach(slot => {
-        // 時間の列に data-label="時間" を追加
+        // スマホ表示のラベルとして data-label="時間" を追加
         html += `<tr><td data-label="時間">${slot}～</td>`;
         
         for (let room = 1; room <= 3; room++) {
+            // その時間・その部屋に予約があるかチェック
             const booking = reservations.find(r => 
                 r.room_number === room && 
                 slot >= r.start_time && slot < r.end_time
             );
             
-            // 各部屋の列に data-label="購読室 X" を追加
-            const label = `購読室 ${room}`;
+            const label = `購読室 ${room}`; // スマホ表示用のラベル名
+            
             if (booking) {
+                // 予約済みセルの生成
                 html += `<td class="booked" data-label="${label}">予約済み</td>`;
             } else {
+                // 空きセルの生成
                 html += `<td class="free" data-label="${label}">空き</td>`;
             }
         }
