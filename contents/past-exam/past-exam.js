@@ -14,43 +14,35 @@ document.addEventListener('DOMContentLoaded', () => {
 async function viewPdf(fileName, yearLabel, isNewTab = false) {
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-    // 1. スマホの場合、または「別タブで開く」が押された場合
-    if (isMobile || isNewTab) {
-        // ポップアップブロック回避のため、即座に空のタブを開く
-        const newWindow = window.open('', '_blank');
-        if (newWindow) newWindow.document.write('過去問を読み込み中...');
-
-        const { data, error } = await _supabase
-            .storage
-            .from('past-exams')
-            .createSignedUrl(fileName, 120);
-
-        if (error || !data) {
-            if (newWindow) newWindow.close();
-            alert('PDFの取得に失敗しました。');
-            return;
-        }
-
-        // URLが取得できたら、開いておいたタブをそのURLに切り替える
-        if (newWindow) {
-            newWindow.location.href = data.signedUrl;
-        }
-        return; // ここで処理終了
-    }
-
-    // 2. PCかつプレビューの場合（これまで通り）
+    // 1. まず署名付きURLを取得する（ここは共通）
     const { data, error } = await _supabase
         .storage
         .from('past-exams')
         .createSignedUrl(fileName, 120);
 
-    if (error) {
+    if (error || !data) {
         alert('PDFの取得に失敗しました。');
         return;
     }
 
+    const secureUrl = data.signedUrl;
+
+    // 2. スマホの場合、または「別タブ」指定の場合
+    if (isMobile || isNewTab) {
+        // 見えないリンクを作って、それをクリックさせることでポップアップブロックを回避
+        const link = document.createElement('a');
+        link.href = secureUrl;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        document.body.appendChild(link);
+        link.click(); // ここで実際にクリック！
+        document.body.removeChild(link); // 使い終わったら消す
+        return;
+    }
+
+    // 3. PCでのプレビュー表示（これまで通り）
     const iframe = document.getElementById('pdf-preview-frame');
-    iframe.src = data.signedUrl;
+    iframe.src = secureUrl;
     document.getElementById('preview-title').innerText = yearLabel + " のプレビュー";
     document.getElementById('preview-container').scrollIntoView({ behavior: 'smooth' });
 }
