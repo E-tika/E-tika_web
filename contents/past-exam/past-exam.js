@@ -10,9 +10,35 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// 📄 PDF発行：スマホ対策を施したバージョン
+// 📄 PDF発行：スマホ対策の最終版
 async function viewPdf(fileName, yearLabel, isNewTab = false) {
-    // 期限を少し余裕を持って120秒に設定
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+    // 1. スマホの場合、または「別タブで開く」が押された場合
+    if (isMobile || isNewTab) {
+        // ポップアップブロック回避のため、即座に空のタブを開く
+        const newWindow = window.open('', '_blank');
+        if (newWindow) newWindow.document.write('過去問を読み込み中...');
+
+        const { data, error } = await _supabase
+            .storage
+            .from('past-exams')
+            .createSignedUrl(fileName, 120);
+
+        if (error || !data) {
+            if (newWindow) newWindow.close();
+            alert('PDFの取得に失敗しました。');
+            return;
+        }
+
+        // URLが取得できたら、開いておいたタブをそのURLに切り替える
+        if (newWindow) {
+            newWindow.location.href = data.signedUrl;
+        }
+        return; // ここで処理終了
+    }
+
+    // 2. PCかつプレビューの場合（これまで通り）
     const { data, error } = await _supabase
         .storage
         .from('past-exams')
@@ -23,19 +49,8 @@ async function viewPdf(fileName, yearLabel, isNewTab = false) {
         return;
     }
 
-    const secureUrl = data.signedUrl;
-
-    // ✨ スマホ・タブレットかどうかを判定する
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-    // 「別タブで開くボタンが押された」または「スマホからのアクセス」なら別タブで開く
-    if (isNewTab || isMobile) {
-        window.open(secureUrl, '_blank');
-    } else {
-        // PCの場合はこれまで通りプレビュー表示
-        const iframe = document.getElementById('pdf-preview-frame');
-        iframe.src = secureUrl;
-        document.getElementById('preview-title').innerText = yearLabel + " のプレビュー";
-        document.getElementById('preview-container').scrollIntoView({ behavior: 'smooth' });
-    }
+    const iframe = document.getElementById('pdf-preview-frame');
+    iframe.src = data.signedUrl;
+    document.getElementById('preview-title').innerText = yearLabel + " のプレビュー";
+    document.getElementById('preview-container').scrollIntoView({ behavior: 'smooth' });
 }
