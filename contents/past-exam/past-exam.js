@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 async function viewPdf(fileName, yearLabel, isNewTab = false) {
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-    // 1. まず署名付きURLを取得する（ここは共通）
+    // 1. SupabaseからURLを取得
     const { data, error } = await _supabase
         .storage
         .from('past-exams')
@@ -27,22 +27,18 @@ async function viewPdf(fileName, yearLabel, isNewTab = false) {
 
     const secureUrl = data.signedUrl;
 
-    // 2. スマホの場合、または「別タブ」指定の場合
-    if (isMobile || isNewTab) {
-        // 見えないリンクを作って、それをクリックさせることでポップアップブロックを回避
-        const link = document.createElement('a');
-        link.href = secureUrl;
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-        document.body.appendChild(link);
-        link.click(); // ここで実際にクリック！
-        document.body.removeChild(link); // 使い終わったら消す
-        return;
+    if (isMobile) {
+        // 【スマホ用】URLを直接ブラウザの場所（アドレスバー）に叩き込む
+        // ユーザーが「タップ」した直後のこの文脈なら、多くのスマホで強制遷移が効きます
+        window.location.href = secureUrl;
+    } else if (isNewTab) {
+        // PCの別タブ用
+        window.open(secureUrl, '_blank');
+    } else {
+        // PCのプレビュー用（これまで通り）
+        const iframe = document.getElementById('pdf-preview-frame');
+        iframe.src = secureUrl;
+        document.getElementById('preview-title').innerText = yearLabel + " のプレビュー";
+        document.getElementById('preview-container').scrollIntoView({ behavior: 'smooth' });
     }
-
-    // 3. PCでのプレビュー表示（これまで通り）
-    const iframe = document.getElementById('pdf-preview-frame');
-    iframe.src = secureUrl;
-    document.getElementById('preview-title').innerText = yearLabel + " のプレビュー";
-    document.getElementById('preview-container').scrollIntoView({ behavior: 'smooth' });
 }
