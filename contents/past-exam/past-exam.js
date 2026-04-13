@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// 📄 PDF発行：スマホ対策の最終版
 async function viewPdf(fileName, yearLabel, isNewTab = false) {
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
