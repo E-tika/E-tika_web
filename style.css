@@ -155,3 +155,84 @@ body {
         margin: 5px 10px;
     }
 }
+
+/* お知らせ全体の枠 */
+.news-container {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    overflow: hidden; /* 角丸からはみ出さないように */
+}
+
+/* 「お知らせ」の見出し */
+.news-title {
+    background-color: #333;
+    color: #fff;
+    margin: 0;
+    padding: 8px 15px;
+    font-size: 1rem;
+}
+
+/* スクロールする中身の箱 */
+.news-scroll-box {
+    height: 150px; /* ここで枠の「高さ」を固定します */
+    overflow-y: scroll; /* 縦方向にスクロールバーを出す */
+    padding: 10px 15px;
+}
+
+/* リストの見た目調整 */
+.news-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.news-list li {
+    padding: 8px 0;
+    border-bottom: 1px dashed #eee;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.news-list li:last-child {
+    border-bottom: none;
+}
+
+/* 日付のデザイン */
+.news-date {
+    font-weight: bold;
+    color: #666;
+    margin-right: 10px;
+    display: inline-block;
+    min-width: 85px;
+}
+
+.rules-section {
+    margin-top: 20px;
+    padding: 10px 0;
+    border-top: 1px solid #eee; /* 上に軽い仕切り線 */
+}
+
+.pdf-link {
+    display: inline-flex;
+    align-items: center;
+    color: #0056b3;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.pdf-link:hover {
+    text-decoration: underline;
+}
+
+.pdf-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+}
+
+.rules-link-text {
+    font-size: 0.95rem;
+}
