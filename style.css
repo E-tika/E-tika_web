@@ -193,7 +193,9 @@ body {
     padding: 8px 0;
     border-bottom: 1px dashed #eee;
     font-size: 0.9rem;
-    line-height: 1.4;
+    line-height: 1.5;
+    display: flex;
+    align-items: flex-start; /* 文章が長くなっても日付は上に固定 */
 }
 
 .news-list li:last-child {
@@ -202,11 +204,12 @@ body {
 
 /* 日付のデザイン */
 .news-date {
+    /* ✨ 日付の幅を固定して、文章の開始位置を揃える */
+    flex: 0 0 90px; /* 90px分は必ず日付用に確保する */
+    color: #888;
     font-weight: bold;
-    color: #666;
+    font-size: 0.85rem;
     margin-right: 10px;
-    display: inline-block;
-    min-width: 85px;
 }
 
 .rules-section {
@@ -235,4 +238,39 @@ body {
 
 .rules-link-text {
     font-size: 0.95rem;
+}
+
+/* スマホ（画面幅768px以下）の設定 */
+@media screen and (max-width: 768px) {
+    .navbar {
+        flex-direction: column; /* 縦に並べる */
+        align-items: center;    /* 中央に寄せる */
+        padding: 10px;
+    }
+
+    .nav-links {
+        flex-direction: column; /* メニュー項目も縦に並べる */
+        width: 100%;            /* 横幅いっぱいにする */
+        gap: 10px;              /* 項目ごとの隙間 */
+        margin-top: 10px;       /* ロゴとの間の隙間 */
+        text-align: center;
+    }
+
+    .nav-links a {
+        display: block;         /* 1項目で1行使うようにする */
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* 軽い仕切り線 */
+    }
+    
+    .nav-links a:last-child {
+        border-bottom: none;    /* 最後だけ線なし */
+    }
+}
+
+/* style.css に追加 */
+.version-info {
+    font-size: 0.7rem;
+    color: #999;
+    text-align: right;
+    margin-right: 10px;
 }
