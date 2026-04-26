@@ -1,3 +1,15 @@
+.alert-banner {
+    background-color: #ffcccc; /* 薄い赤背景 */
+    color: #d32f2f;           /* 濃い赤文字 */
+    border: 2px solid #d32f2f;
+    padding: 15px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
 .reservation-system {
     display: flex;
     gap: 20px;
