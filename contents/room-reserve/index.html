@@ -18,6 +18,7 @@
             </a>
         </div>
         <nav class="nav-links">
+            <a href="../sawakai/index.html">茶話会</a>
             <a href="index.html">購読室予約</a>
             <a href="../past-exam/index.html">期末試験過去問</a>
             <a href="../printer-reserve/index.html">印刷室</a>
@@ -28,9 +29,18 @@
 
     <main class="container">
 
-    <div class="alert-banner">
-            2026年5月11日以降の購読室予約は、こちらで行ってください。
+    <div class="archive-header">
+        <h1>購読室利用予約</h1>
+        <div class="notice-box">
+            <h4>注意事項:</h4>
+            <ul>
+                    <li>重複予約は先の予約を優先します。</li>
+                    <li>30日後以内の予約のみを承っております。</li>
+                    <li>空予約防止のため、不要になった予約はキャンセルしてください。</li>
+                    <li>土・日・祝日は、法経本館が閉鎖されている可能性が高いため、ご利用いただけません。</li>
+            </ul>
         </div>
+    </div>
 
     <div class="reservation-system">
         <div class="calendar-sidebar">
@@ -38,17 +48,17 @@
             <p id="selected-date-display" class="date-badge">選択した日付: ----/--/--</p>
             <input type="date" id="date-picker" class="custom-date-input">
             
-            <div class="notice-box">
-                <h4>注意事項:</h4>
-                <ul>
-                    <li>重複予約は先の予約を優先します。</li>
-                    <li>土・日・祝はご利用いただけません。</li>
-                </ul>
-            </div>
-            
-            <a href="https://forms.gle/4aS3mjFwKEQWe5k79" target="_blank" class="reserve-button">
+            <a href="https://forms.gle/bBuJm15HAuyzfCzT8" target="_blank" class="reserve-button">
                 🗓️ 予約フォームを開く
             </a>
+
+            <div id="cancel-form">
+                <h3>予約の取り消し</h3>
+                <input type="text" id="cancelCodeInput" placeholder="予約番号（例: A7K39P2X）" maxlength="8">
+                <button id="cancelBtn">予約を取り消す</button>
+                <p id="cancelMessage"></p>
+            </div>
+
         </div>
 
         <div class="timetable-area">
@@ -62,7 +72,7 @@
     <script src="reserve.js"></script>
     <footer class="main-footer">
     <p>&copy; 2026 経済学部同好会常任委員会</p>
-    <p class="version-info">ver. 1.0.0</p>
+    <p class="version-info">ver. 2.0.0</p>
 </footer>
 </body>
 </html>

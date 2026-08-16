@@ -10,6 +10,32 @@
     border-radius: 5px;
 }
 
+/* ヘッダー＆注意書きエリア */
+.archive-header {
+    margin-bottom: 30px;
+}
+
+.archive-header h1 {
+    font-size: 1.8rem;
+    color: #0f172a;
+    margin-bottom: 15px;
+}
+
+.notice-box {
+    background: #eff6ff;
+    border-left: 4px solid #3b82f6;
+    border-radius: 0 8px 8px 0;
+    padding: 15px 20px;
+}
+
+.notice-box ul {
+    margin: 0;
+    padding-left: 18px;
+    color: #1e3a8a;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
 .reservation-system {
     display: flex;
     gap: 20px;
