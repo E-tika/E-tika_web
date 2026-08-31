@@ -5,11 +5,15 @@
     <title>過去問リスト - 経済学部同好会</title>
     <link rel="icon" href="../../images/banana.png" type="image/png">
     <link rel="stylesheet" href="../../style.css">
-    <link rel="stylesheet" href="style.css">
-    
+    <link rel="stylesheet" href="style.css"> 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="past-exam.js" defer></script>
+
+    <!-- 一括ZIPダウンロード用ライブラリ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 </head>
+
 <body>
     <header class="navbar">
         <div class="nav-logo">
@@ -29,51 +33,2049 @@
     </header>
 
     <main class="container past-exam-layout">
-        <div class="list-section">
-            <h1>過去問アーカイブ</h1>
-            <p>・年度を選択すると右側にプレビューが表示されます．</p>
-            <p>・スマートフォンで閲覧する場合は，プレビューが反映されません．</p>
-            <p>・一部の科目で，担当教員が前年度から変わっているものがありますので，注意してください．</p>
-            <p>・2024年度以前の過去問について，担当変更等の理由により目次に記載があるにもかかわらず，掲載を削除したものがございます．</p>
+    <!-- ヘッダー＆注意書きエリア -->
+    <div class="archive-header">
+        <h1>過去問アーカイブ</h1>
+        <div class="notice-box">
+            <ul>
+                <li>すべての過去問を網羅しているわけではありません。担当教員より許可をいただいた問題のみ掲載しています。ご不便をおかけします。</li>
+                <li>「別タブ」を押すと、PDFを新規タブで全画面表示・ダウンロードできます。</li>
+                <li>一部の科目で担当教員が変更になっている場合がありますのでご注意ください。</li>
+                <li>2024年度以前の過去問について、担当変更等の理由により掲載を一部削除しているものがございます。</li>
+                <li>過去問は試験期間中に法経第五教室横のポストにて回収しています。また、経済学部同好会公式LINEの個別チャットにお送りいただくことも可能です。</li> 
+                <li>掲載されている問題は、すべて出題者に著作権があります。再配布を禁じます。</li>
+                <li>過去問は科目ごとに掲載しております．統合されたい方は、i Love PDF(https://www.ilovepdf.com/ja/merge_pdf)などをご活用ください。</li>
+            </ul>
+        </div>
+    </div>
 
-            <div class="exam-vertical-list">
-                <div class="exam-item-row" onclick="viewPdf('exam2025.pdf', '2025年度')">
-                    <span class="exam-year">2025年度 期末試験</span>
-                    <div class="action-buttons">
-                        <button class="view-btn">プレビュー</button>
-                        <a href="javascript:void(0)" class="download-btn" onclick="event.stopPropagation(); viewPdf('exam2025.pdf', '2025年度', true);">別タブで開く</a>
-                    </div>
+    <!-- 学期選択タブ -->
+<div class="term-tabs">
+    <button class="term-tab active" onclick="switchTerm('zenki')">前期</button>
+    <button class="term-tab" onclick="switchTerm('kouki')">後期</button>
+</div>
+
+<div class="bulk-download-bar">
+    <label class="select-all-label">
+        <input type="checkbox" id="select-all-visible" onchange="toggleSelectAll(this)"> 表示中をすべて選択
+    </label>
+    <button id="bulk-download-btn" class="bulk-btn" onclick="downloadSelectedPdfs()" disabled>
+        選択した過去問を一括ダウンロード ( <span id="selected-count">0</span> )
+    </button>
+</div>
+
+    <!-- 時間割形式の縦長カードリストエリア -->
+    <!-- 前期コンテンツ -->
+<div id="term-zenki" class="term-content active">
+
+        <!-- ================= 月曜日 ================= -->
+        <section class="day-section">
+            <h2 class="day-title"> 月曜日（前期）</h2>
+
+            <!-- 月曜 1限 -->
+    <div class="period-card">
+        <div class="period-header">
+            <span class="period-badge">1限</span>
+        </div>
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">情報処理入門</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                <!-- 2025年度 -->
+                <div class="exam-item">
+                    <span class="exam-label">教員により回収</span>
                 </div>
+            </div>
+        </div>
+    </div>
 
-                <div class="exam-item-row" onclick="viewPdf('exam2024.pdf', '2024年度')">
-                    <span class="exam-year">2024年度 期末試験</span>
-                    <div class="action-buttons">
-                        <button class="view-btn">プレビュー</button>
-                        <a href="javascript:void(0)" class="download-btn" onclick="event.stopPropagation(); viewPdf('exam2024.pdf', '2024年度', true);">別タブで開く</a>
-                    </div>
+    <!-- 月曜 2限 -->
+    <div class="period-card">
+    <div class="period-header">
+        <span class="period-badge">2限</span>
+    </div>
+    <div class="subject-group">
+        <div class="subject-header">
+            <h3 class="subject-name">計量経済学1</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+        <div class="exam-list">
+            <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2025/keiryo_keizai1_2025.pdf" 
+                           data-title="月曜2限_計量経済学1_2025">
+                    <span class="exam-label">2025年度 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2025/keiryo_keizai1_2025.pdf', '月曜2限 計量経済学1 (2025)', true, this)">別タブ</a>
                 </div>
+            </div>
 
-                <div class="exam-item-row" onclick="viewPdf('exam2023.pdf', '2023年度')">
-                    <span class="exam-year">2023年度 期末試験</span>
-                    <div class="action-buttons">
-                        <button class="view-btn">プレビュー</button>
-                        <a href="javascript:void(0)" class="download-btn" onclick="event.stopPropagation(); viewPdf('exam2023.pdf', '2023年度', true);">別タブで開く</a>
-                    </div>
+             <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2023/keiryo_keizai1_2023.pdf" 
+                           data-title="月曜2限_計量経済学1_2023">
+                    <span class="exam-label">2023年度 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2023/keiryo_keizai1_2023.pdf', '月曜2限 計量経済学1 (2023)', true, this)">別タブ</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- 月曜 3限 -->
+    <div class="period-card">
+        <div class="period-header">
+            <span class="period-badge">3限</span>
+        </div>
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">マクロ経済学1</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p>教員による過去問配布あり．</p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">掲載不可</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 月曜 4限（該当なし） -->
+    <div class="period-card empty-period">
+        <div class="period-header">
+            <span class="period-badge">4限</span>
+            <span class="empty-text">該当する過去問はありません</span>
+        </div>
+    </div>
+
+    <!-- 月曜 5限（該当なし） -->
+    <div class="period-card empty-period">
+        <div class="period-header">
+            <span class="period-badge">5限</span>
+            <span class="empty-text">該当する過去問はありません</span>
+        </div>
+    </div>
+        </section>
+
+       <!-- ================= 火曜日 ================= -->
+<section class="day-section">
+    <h2 class="day-title"> 火曜日</h2>
+
+    <!-- 火曜 1限 -->
+    <div class="period-card">
+        <div class="period-header">
+            <span class="period-badge">1限</span>
+        </div>
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">会計学入門</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">掲載不可</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 火曜 2限（複数科目） -->
+    <div class="period-card">
+        <div class="period-header">
+            <span class="period-badge">2限</span>
+        </div>
+        <!-- 科目1 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">ミクロ経済学入門<span class="note-text">2026年度より教員の変更あり</span></h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">2026年度以降は教員により回収</span>
+                </div>
+                <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <span class="exam-label">2025年度は未回収</span>
+                </label>
+            </div>
+                
+                <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2024/micro_nyumon_2024.pdf" 
+                           data-title="火曜2限_ミクロ経済学入門_2024">
+                    <span class="exam-label">2024年度 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2024/micro_nyumon_2024.pdf', '火曜2限 ミクロ経済学入門 (2024)', true, this)">別タブ</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <!-- 科目2 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">統計学2</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p>授業内の演習や持ち帰り課題ができれば，満点を狙うのは容易．
+                証明問題が1問含まれ，2024年はチェビシェフ不等式，2026年は一致性の証明が出題された．</p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">教員により回収</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 科目3 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">情報処理論1b</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">教員により回収</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 火曜 3限（複数科目・隔年開講補足付き） -->
+    <div class="period-card">
+        <div class="period-header">
+            <span class="period-badge">3限</span>
+        </div>
+        <!-- 科目1 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">欧米経済史</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2024/oubei_keizaisi_2024.pdf" 
+                           data-title="火曜3限_欧米経済史_2024">
+                    <span class="exam-label">2024年度 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2024/oubei_keizaisi_2024.pdf', '火曜3限 欧米経済史 (2024)', true, this)">別タブ</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <!-- 科目2 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">農業経済論 <span class="note-text">(偶数年)</span></h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">掲載不可</span>
                 </div>
             </div>
         </div>
 
-        <div id="preview-container" class="preview-section">
-            <h3 id="preview-title">年度を選択してください</h3>
-            <div class="iframe-wrapper">
-                <iframe id="pdf-preview-frame" src="" frameborder="0"></iframe>
+        <!-- 科目3 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">国際農政論<span class="note-text">(奇数年)</span></h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p>講義内で出題について言及あり．ただし，どの回で提示されるかは年によって異なる．</p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">掲載不可</span>
+                </div>
             </div>
         </div>
-    </main>
+    </div>
+
+    <!-- 火曜 4限 -->
+    <div class="period-card">
+        <div class="period-header">
+            <span class="period-badge">4限</span>
+        </div>
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">労働経済学</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">教員により回収</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 火曜 5限（複数科目） -->
+    <div class="period-card">
+        <div class="period-header">
+            <span class="period-badge">5限</span>
+        </div>
+        <!-- 科目1 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">マーケティング1</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">教員により回収</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 科目2 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">動学的マクロ経済分析</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2025/dougaku_macro_2025_fin.pdf" 
+                           data-title="火曜5限_動学的マクロ経済学(期末)_2025">
+                    <span class="exam-label">2025年度 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2025/dougaku_macro_2025_fin.pdf', '火曜5限 動学的マクロ経済学 (2025期末)', true, this)">別タブ</a>
+                </div>
+            </div>
+
+                <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2025/dougaku_macro_2025_mid.pdf" 
+                           data-title="火曜5限_動学的マクロ経済学(中間)_2025">
+                    <span class="exam-label">2025年度 中間試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2025/dougaku_macro_2025_mid.pdf', '火曜5限 動学的マクロ経済学 (2025中間)', true, this)">別タブ</a>
+                </div>
+            </div>
+
+                <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2024/dougaku_macro_2024_final.pdf" 
+                           data-title="火曜5限_動学的マクロ経済学(期末)_2024">
+                    <span class="exam-label">2024年度 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2024/dougaku_macro_2024_final.pdf', '火曜5限 動学的マクロ経済学 (2024期末)', true, this)">別タブ</a>
+                </div>
+            </div>
+
+                <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2024/dougaku_macro_2024_medi.pdf" 
+                           data-title="火曜5限_動学的マクロ経済学(中間)_2024">
+                    <span class="exam-label">2024年度 中間試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2024/dougaku_macro_2024_medi.pdf', '火曜5限 動学的マクロ経済学 (2024中間)', true, this)">別タブ</a>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+        <!-- ================= 水曜日 ================= -->
+<section class="day-section">
+    <h2 class="day-title"> 水曜日</h2>
+
+    <!-- 水曜 1限（複数科目） -->
+    <div class="period-card">
+        <div class="period-header">
+            <span class="period-badge">1限</span>
+        </div>
+        <!-- 科目1 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">会計学</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p>教員による過去問配布あり．それにより，概ね傾向は掴むことが可能．</p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">掲載不可</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 科目2 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">地方財政論</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">教員により回収</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 水曜 2限（複数科目） -->
+    <div class="period-card">
+        <div class="period-header">
+            <span class="period-badge">2限</span>
+        </div>
+        <!-- 科目1 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">マクロ経済学入門<span class="note-text">2026年度より教員の変更あり</span></h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">2026年度以降は教員により回収</span>
+                </div>
+                <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2025/macro_nyumon_2025.pdf" 
+                           data-title="水曜2限_マクロ経済学入門_2025">
+                    <span class="exam-label">2025年度 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2025/macro_nyumon_2025.pdf', '水曜2限 マクロ経済学入門 (2025)', true, this)">別タブ</a>
+                </div>
+            </div>
+
+                <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2024/macro_nyumon_2024.pdf" 
+                           data-title="水曜2限_マクロ経済学入門_2024">
+                    <span class="exam-label">2024年度 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2024/macro_nyumon_2024.pdf', '水曜2限 マクロ経済学入門 (2024)', true, this)">別タブ</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <!-- 科目2 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">社会経済学2</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">掲載不可</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 科目3 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">国際経済学</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">掲載不可</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 水曜 3限（複数科目・隔年開講補足付き） -->
+    <div class="period-card">
+        <div class="period-header">
+            <span class="period-badge">3限</span>
+        </div>
+        
+        <!-- 科目1 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">現代経済事情</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">掲載不可</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 科目2 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">経済数学1<span class="note-text">(偶数年)</span></h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">掲載不可</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 科目3 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">経済数学2<span class="note-text">(奇数年)</span></h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p>授業中に出題について言及あり．</p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">掲載不可</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 水曜 4限（複数科目） -->
+    <div class="period-card">
+        <div class="period-header">
+            <span class="period-badge">4限</span>
+        </div>
+        
+        <!-- 科目1 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">ミクロ経済学1</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p>担当教員の配布するプリントを中心に出題．語句の意味を尋ねる問題が最初に5問程度ある．
+                5択のマーク式で，選択肢の中に「いずれでもない」がある．</p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">教員により回収</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 科目2 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">経済学史<span class="note-text">2027年度より教員の変更あり</span></h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">掲載不可</span>
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- 水曜 5限（該当なし） -->
+    <div class="period-card empty-period">
+        <div class="period-header">
+            <span class="period-badge">5限</span>
+            <span class="empty-text">該当する過去問はありません</span>
+        </div>
+    </div>
+</section>
+
+        <!-- ================= 木曜日 ================= -->
+<section class="day-section">
+    <h2 class="day-title"> 木曜日</h2>
+
+    <!-- 木曜 1限 -->
+    <div class="period-card">
+        <div class="period-header">
+            <span class="period-badge">1限</span>
+        </div>
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">統計学1<span class="note-text">2026年度より教員の変更あり</span></h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2025/toukeigaku1_2025_winter.pdf" 
+                           data-title="木曜1限_統計学1_2025後">
+                    <span class="exam-label">2025年度後期 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2025/toukeigaku1_2025_winter.pdf', '木曜1限 統計学1 (2025後)', true, this)">別タブ</a>
+                </div>
+            </div>
+
+                <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2025/toukeigaku1_2025_summer.pdf" 
+                           data-title="木曜1限_統計学1_2025前">
+                    <span class="exam-label">2025年度前期 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2025/toukeigaku1_2025_summer.pdf', '木曜1限 統計学1 (2025前)', true, this)">別タブ</a>
+                </div>
+            </div>
+
+                <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2024/toukeigaku1_2024_winter.pdf" 
+                           data-title="木曜1限_統計学1_2024後">
+                    <span class="exam-label">2024年度後期 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2024/toukeigaku1_2024_winter.pdf', '木曜1限 統計学1 (2024後)', true, this)">別タブ</a>
+                </div>
+            </div>
+
+                <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2024/toukeigaku1_2024_summer.pdf" 
+                           data-title="木曜1限_統計学1_2024前">
+                    <span class="exam-label">2024年度前期 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2024/toukeigaku1_2024_summer.pdf', '木曜1限 統計学1 (2024前)', true, this)">別タブ</a>
+                </div>
+            </div>
+
+            <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2023/toukeigaku1_2023_winter.pdf" 
+                           data-title="木曜1限_統計学1_2023後">
+                    <span class="exam-label">2023年度後期 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2023/toukeigaku1_2023_winter.pdf', '木曜1限 統計学1 (2023後)', true, this)">別タブ</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- 木曜 2限（該当なし） -->
+    <div class="period-card empty-period">
+        <div class="period-header">
+            <span class="period-badge">2限</span>
+            <span class="empty-text">該当する過去問はありません</span>
+        </div>
+    </div>
+
+    <!-- 木曜 3限（該当なし） -->
+    <div class="period-card empty-period">
+        <div class="period-header">
+            <span class="period-badge">3限</span>
+            <span class="empty-text">該当する過去問はありません</span>
+        </div>
+    </div>
+
+    <!-- 木曜 4限（該当なし） -->
+    <div class="period-card empty-period">
+        <div class="period-header">
+            <span class="period-badge">4限</span>
+            <span class="empty-text">該当する過去問はありません</span>
+        </div>
+    </div>
+
+    <!-- 木曜 5限（該当なし） -->
+    <div class="period-card empty-period">
+        <div class="period-header">
+            <span class="period-badge">5限</span>
+            <span class="empty-text">該当する過去問はありません</span>
+        </div>
+    </div>
+</section>
+
+        <!-- ================= 金曜日 ================= -->
+<section class="day-section">
+    <h2 class="day-title"> 金曜日</h2>
+
+    <!-- 金曜 1限 -->
+    <div class="period-card">
+        <div class="period-header">
+            <span class="period-badge">1限</span>
+        </div>
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">財政学</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p>教科書の持ち込み可．</p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">掲載不可</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 金曜 2限 -->
+    <div class="period-card">
+        <div class="period-header">
+            <span class="period-badge">2限</span>
+        </div>
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">経済史・思想史入門<span class="note-text">2027年度より教員の変更あり</span></h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">経済史は教員により回収，思想史は2027年度より教員の変更あり</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 金曜 3限（該当なし） -->
+    <div class="period-card empty-period">
+        <div class="period-header">
+            <span class="period-badge">3限</span>
+            <span class="empty-text">該当する過去問はありません</span>
+        </div>
+    </div>
+
+    <!-- 金曜 4限（該当なし） -->
+    <div class="period-card empty-period">
+        <div class="period-header">
+            <span class="period-badge">4限</span>
+            <span class="empty-text">該当する過去問はありません</span>
+        </div>
+    </div>
+
+    <!-- 金曜 5限（該当なし） -->
+    <div class="period-card empty-period">
+        <div class="period-header">
+            <span class="period-badge">5限</span>
+            <span class="empty-text">該当する過去問はありません</span>
+        </div>
+    </div>
+</section>
+    </div>
+</div>
+
+<!-- 後期コンテンツ -->
+<div id="term-kouki" class="term-content">
+   <!-- ================= 後期：月曜日 ================= -->
+<section class="day-section">
+    <h2 class="day-title"> 月曜日（後期）</h2>
+
+    <!-- 月曜 1限 -->
+    <div class="period-card">
+        <div class="period-header">
+            <span class="period-badge">1限</span>
+        </div>
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">経済発展論</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">掲載不可</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 月曜 2限（複数科目） -->
+    <div class="period-card">
+        <div class="period-header">
+            <span class="period-badge">2限</span>
+        </div>
+        <!-- 科目1 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">ミクロ経済学入門<span class="note-text">2026年度より教員の変更あり</span></h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <span class="exam-label">2025年度は未回収</span>
+                </label>
+            </div>
+                
+                <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2024/micro_nyumon_2024.pdf" 
+                           data-title="月曜2限_ミクロ経済学入門_2024">
+                    <span class="exam-label">2024年度 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2024/micro_nyumon_2024.pdf', '月曜2限 ミクロ経済学入門 (2024)', true, this)">別タブ</a>
+                </div>
+            </div>
+        </div>
+    
+        <!-- 科目2 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">日本経済論</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p>講義内で登場した自身の知らない単語を中心に復習し，正誤判定が可能になる程度に暗記．
+                特に講義内で説明された対の関係のもの（売りオペ・買いオペのようなもの）については，ひっかけ問題や論述に注意が必要．
+                補論からの出題もある．
+            </p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">教員により回収</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- 月曜 3限 -->
+    <div class="period-card">
+        <div class="period-header">
+            <span class="period-badge">3限</span>
+        </div>
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">比較経営論</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">未回収</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 月曜 4限（該当なし） -->
+    <div class="period-card empty-period">
+        <div class="period-header">
+            <span class="period-badge">4限</span>
+            <span class="empty-text">該当する過去問はありません</span>
+        </div>
+    </div>
+
+    <!-- 月曜 5限（該当なし） -->
+    <div class="period-card empty-period">
+        <div class="period-header">
+            <span class="period-badge">5限</span>
+            <span class="empty-text">該当する過去問はありません</span>
+        </div>
+    </div>
+</section>
+
+<!-- ================= 後期：火曜日 ================= -->
+<section class="day-section">
+    <h2 class="day-title"> 火曜日（後期）</h2>
+
+    <!-- 火曜 1限（該当なし） -->
+    <div class="period-card empty-period">
+        <div class="period-header">
+            <span class="period-badge">1限</span>
+            <span class="empty-text">該当する過去問はありません</span>
+        </div>
+    </div>
+
+    <!-- 火曜 2限（複数科目・注記付き） -->
+    <div class="period-card">
+        <div class="period-header">
+            <span class="period-badge">2限</span>
+        </div>
+        <!-- 科目1 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">マクロ経済学入門<span class="note-text">2026年度より教員の変更あり</span></h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">2026年度以降は教員により回収</span>
+                </div>
+                <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2025/macro_nyumon_2025.pdf" 
+                           data-title="水曜2限_マクロ経済学入門_2025">
+                    <span class="exam-label">2025年度 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2025/macro_nyumon_2025.pdf', '水曜2限 マクロ経済学入門 (2025)', true, this)">別タブ</a>
+                </div>
+            </div>
+
+                <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2024/macro_nyumon_2024.pdf" 
+                           data-title="水曜2限_マクロ経済学入門_2024">
+                    <span class="exam-label">2024年度 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2024/macro_nyumon_2024.pdf', '水曜2限 マクロ経済学入門 (2024)', true, this)">別タブ</a>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <!-- 科目2 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">ミクロ経済学2</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p>例年は武隈の問題集からの出題が中心．ミクロ経済学1と同様，5択のマーク式で，「どれでもない」が選択肢に入っている．</p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">教員により回収</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 科目3 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">東アジア経済論</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">未回収</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 科目4 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">情報処理論2b</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">教員により回収</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 火曜 3限（複数科目） -->
+    <div class="period-card">
+        <div class="period-header">
+            <span class="period-badge">3限</span>
+        </div>
+        <!-- 科目1 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">経営史</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">未回収</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 科目2 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">人的資源管理論</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                
+                <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2025/zinteki_kanri_2025.pdf" 
+                           data-title="火曜3限_人的資源管理論_2025">
+                    <span class="exam-label">2025年度 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2025/zinteki_kanri_2025.pdf', '火曜3限 人的資源管理論 (2025)', true, this)">別タブ</a>
+                </div>
+            </div>
+
+            <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2024/zinteki_sigen_kanri_2024.pdf" 
+                           data-title="火曜3限_人的資源管理論_2024">
+                    <span class="exam-label">2024年度 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2024/zinteki_sigen_kanri_2024.pdf', '火曜3限 人的資源管理論 (2024)', true, this)">別タブ</a>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 火曜 4限（複数科目） -->
+    <div class="period-card">
+        <div class="period-header">
+            <span class="period-badge">4限</span>
+        </div>
+        <!-- 科目1 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">公共経済学</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">掲載不可</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 科目2 -->
+        <div class="subject-group">
+           <div class="subject-header">
+            <h3 class="subject-name">国際金融論</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p>教員から3年分，過去問の掲載がされる．例年は2択の正誤判定問題であったが，昨年度から多肢選択に変更．
+                過去問での出題内容を理解することが重要．
+            </p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2025/kokusai_kinyu_2025.pdf" 
+                           data-title="火曜4限_国際金融論_2025">
+                    <span class="exam-label">2025年度 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2025/kokusai_kinyu_2025.pdf', '国際金融論 (2025)', true, this)">別タブ</a>
+                </div>
+            </div>
+
+            <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2024/kokusai_kinyu_2024.pdf" 
+                           data-title="火曜4限_国際金融論_2024">
+                    <span class="exam-label">2024年度 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2024/kokusai_kinyu_2024.pdf', '国際金融論 (2024)', true, this)">別タブ</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- 火曜 5限（該当なし） -->
+    <div class="period-card empty-period">
+        <div class="period-header">
+            <span class="period-badge">5限</span>
+            <span class="empty-text">該当する過去問はありません</span>
+        </div>
+    </div>
+</section>
+
+<!-- ================= 後期：水曜日 ================= -->
+<section class="day-section">
+    <h2 class="day-title"> 水曜日（後期）</h2>
+
+    <!-- 水曜 1限（複数科目・隔年開講補足付き） -->
+    <div class="period-card">
+        <div class="period-header">
+            <span class="period-badge">1限</span>
+        </div>
+        <!-- 科目1 -->
+        <div class="subject-header">
+            <h3 class="subject-name">社会経済学入門</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">掲載不可</span>
+                </div>
+            </div>
+
+        <!-- 科目2 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">行動経済学 <span class="note-text">(偶数年)</span></h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2024/koudou_keizai_2024.pdf" 
+                           data-title="水曜1限_行動経済学_2024">
+                    <span class="exam-label">2024年度 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2024/koudou_keizai_2024.pdf', '水曜1限 行動経済学 (2024)', true, this)">別タブ</a>
+                </div>
+            </div>
+
+            <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2022/koudou_keizai_2022.pdf" 
+                           data-title="水曜1限_行動経済学_2022">
+                    <span class="exam-label">2022年度 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2022/koudou_keizai_2022.pdf', '水曜1限 行動経済学 (2022)', true, this)">別タブ</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 科目3 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">調査実験経済学<span class="note-text">(奇数年)</span></h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2025/tyousa_zikken_2025.pdf" 
+                           data-title="水曜1限_調査実験経済学_2025">
+                    <span class="exam-label">2025年度 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2025/tyousa_zikken_2025.pdf', '水曜1限 調査実験経済学 (2025)', true, this)">別タブ</a>
+                </div>
+            </div>
+
+            <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2023/tyousa_zikken_2023.pdf" 
+                           data-title="水曜1限_調査実験経済学_2023">
+                    <span class="exam-label">2023年度 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2023/tyousa_zikken_2023.pdf', '水曜1限 調査実験経済学 (2023)', true, this)">別タブ</a>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+
+    <!-- 水曜 2限（複数科目） -->
+    <div class="period-card">
+        <div class="period-header">
+            <span class="period-badge">2限</span>
+        </div>
+        <!-- 科目1 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">経営学入門</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                
+                <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2024/keiei_nyumon_2024.pdf" 
+                           data-title="水曜2限_経営学入門_2024">
+                    <span class="exam-label">2024年度 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2024/keiei_nyumon_2024.pdf', '水曜2限 経営学入門 (2024)', true, this)">別タブ</a>
+                </div>
+            </div>
+
+            <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2023/keiei_nyumon_2023.pdf" 
+                           data-title="水曜2限_経営学入門_2023">
+                    <span class="exam-label">2023年度 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2023/keiei_nyumon_2023.pdf', '水曜2限 経営学入門 (2023)', true, this)">別タブ</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 科目2 -->
+        <div class="subject-group">
+           <div class="subject-header">
+            <h3 class="subject-name">経済史</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                
+                <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2025/keizaisi_2025.pdf" 
+                           data-title="水曜2限_経済史_2025">
+                    <span class="exam-label">2025年度 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2025/keizaisi_2025.pdf', '水曜2限 経済史 (2025)', true, this)">別タブ</a>
+                </div>
+            </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 水曜 3限（新規科目注記付き） -->
+    <div class="period-card">
+        <div class="period-header">
+            <span class="period-badge">3限</span>
+        </div>
+        <div class="subject-group">
+            <h3 class="subject-name">ゲーム理論 <span class="note-text">2026年度に新規開講</span></h3>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">新規開講につき未入手</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 水曜 4限（複数科目） -->
+    <div class="period-card">
+        <div class="period-header">
+            <span class="period-badge">4限</span>
+        </div>
+        <!-- 科目1 -->
+        <div class="subject-group">
+           <div class="subject-header">
+            <h3 class="subject-name">企業経済学</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p>講義に出席して，配布資料への加筆が必須だが，講義内の板書を復習すれば容易．
+            </p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">掲載不可</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 科目2 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">ファイナンス工学</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+
+                <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2024/finance_kougaku_2024.pdf" 
+                           data-title="水曜4限_ファイナンス工学_2024">
+                    <span class="exam-label">2024年度 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2024/finance_kougaku_2024.pdf', '水曜4限 ファイナンス工学 (2024)', true, this)">別タブ</a>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 水曜 5限（該当なし） -->
+    <div class="period-card empty-period">
+        <div class="period-header">
+            <span class="period-badge">5限</span>
+            <span class="empty-text">該当する過去問はありません</span>
+        </div>
+    </div>
+</section>
+
+<!-- ================= 後期：木曜日 ================= -->
+<section class="day-section">
+    <h2 class="day-title"> 木曜日（後期）</h2>
+
+    <!-- 木曜 1限 -->
+    <div class="period-card">
+        <div class="period-header">
+            <span class="period-badge">1限</span>
+        </div>
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">統計学1</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2025/toukeigaku1_2025_winter.pdf" 
+                           data-title="木曜1限_統計学1_2025後">
+                    <span class="exam-label">2025年度後期 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2025/toukeigaku1_2025_winter.pdf', '木曜1限 統計学1 (2025後)', true, this)">別タブ</a>
+                </div>
+            </div>
+
+                <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2025/toukeigaku1_2025_summer.pdf" 
+                           data-title="木曜1限_統計学1_2025前">
+                    <span class="exam-label">2025年度前期 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2025/toukeigaku1_2025_summer.pdf', '木曜1限 統計学1 (2025前)', true, this)">別タブ</a>
+                </div>
+            </div>
+
+                <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2024/toukeigaku1_2024_winter.pdf" 
+                           data-title="木曜1限_統計学1_2024後">
+                    <span class="exam-label">2024年度後期 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2024/toukeigaku1_2024_winter.pdf', '木曜1限 統計学1 (2024後)', true, this)">別タブ</a>
+                </div>
+            </div>
+
+                <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2024/toukeigaku1_2024_summer.pdf" 
+                           data-title="木曜1限_統計学1_2024前">
+                    <span class="exam-label">2024年度前期 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2024/toukeigaku1_2024_summer.pdf', '木曜1限 統計学1 (2024前)', true, this)">別タブ</a>
+                </div>
+            </div>
+
+            <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2023/toukeigaku1_2023_winter.pdf" 
+                           data-title="木曜1限_統計学1_2023後">
+                    <span class="exam-label">2023年度後期 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2023/toukeigaku1_2023_winter.pdf', '木曜1限 統計学1 (2023後)', true, this)">別タブ</a>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <!-- 木曜 2限（複数科目・注記付き） -->
+    <div class="period-card">
+        <div class="period-header">
+            <span class="period-badge">2限</span>
+        </div>
+        <!-- 科目1 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">金融論<span class="note-text">参考のため，2024年度の「金融政策」も掲載します．</span></h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+
+                <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2025/kinyu_2025.pdf" 
+                           data-title="木曜2限_金融論_2025">
+                    <span class="exam-label">承諾確認中</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2025/kinyu_2025.pdf', '木曜2限 金融論 (2025)', true, this)">別タブ</a>
+                </div>
+            </div>
+
+            <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2024/kinyu_seisaku_2024.pdf" 
+                           data-title="木曜2限_金融政策_2024">
+                    <span class="exam-label">2024年度 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2024/kinyu_seisaku_2024.pdf', '木曜2限 金融政策 (2024)', true, this)">別タブ</a>
+                </div>
+            </div>
+            </div>
+            </div>
+
+        <!-- 科目2 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">計量経済学3 <span class="note-text">旧・計量経済学2（内容の大幅変更あり）</span></h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向（旧・計量経済学2）】</p>
+            <p>難易度は極めて高いが，その分要求される正答率は30%程度．</p>
+        </div>
+            <div class="exam-list">
+
+                <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2025/keiryo_keizai2_2025.pdf" 
+                           data-title="木曜2限_計量経済学2_2025">
+                    <span class="exam-label">2025年度 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2025/keiryo_keizai2_2025.pdf', '木曜2限 計量経済学2 (2025)', true, this)">別タブ</a>
+                </div>
+            </div>
+
+                <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2024/keiryo_keizai2_2024.pdf" 
+                           data-title="木曜2限_計量経済学2_2024">
+                    <span class="exam-label">2024年度 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2024/keiryo_keizai2_2024.pdf', '木曜2限 計量経済学2 (2024)', true, this)">別タブ</a>
+                </div>
+            </div>
+
+            <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2023/keiryo_keizai2_2023.pdf" 
+                           data-title="木曜2限_計量経済学2_2023">
+                    <span class="exam-label">2023年度 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2023/keiryo_keizai2_2023.pdf', '木曜2限 計量経済学2 (2023)', true, this)">別タブ</a>
+                </div>
+            </div>
+            </div>
+
+        <!-- 科目3 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">管理会計</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">掲載不可</span>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <!-- 木曜 3限（該当なし） -->
+    <div class="period-card empty-period">
+        <div class="period-header">
+            <span class="period-badge">3限</span>
+            <span class="empty-text">該当する過去問はありません</span>
+        </div>
+    </div>
+
+    <!-- 木曜 4限（該当なし） -->
+    <div class="period-card empty-period">
+        <div class="period-header">
+            <span class="period-badge">4限</span>
+            <span class="empty-text">該当する過去問はありません</span>
+        </div>
+    </div>
+
+    <!-- 木曜 5限（該当なし） -->
+    <div class="period-card empty-period">
+        <div class="period-header">
+            <span class="period-badge">5限</span>
+            <span class="empty-text">該当する過去問はありません</span>
+        </div>
+    </div>
+</section>
+
+
+<!-- ================= 後期：金曜日 ================= -->
+<section class="day-section">
+    <h2 class="day-title"> 金曜日（後期）</h2>
+
+    <!-- 金曜 1限 -->
+    <div class="period-card">
+        <div class="period-header">
+            <span class="period-badge">1限</span>
+        </div>
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">国際会計論</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                    <span class="exam-label">掲載不可</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 金曜 2限（注記付き） -->
+    <div class="period-card">
+        <div class="period-header">
+            <span class="period-badge">2限</span>
+        </div>
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">マクロ経済学2<span class="note-text">2026年度より教員の変更あり</span></h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2025/macro2_2025.pdf" 
+                           data-title="金曜2限_マクロ経済学2_2025">
+                    <span class="exam-label">2025年度 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2025/macro2_2025.pdf', '金曜2限 マクロ経済学2 (2025)', true, this)">別タブ</a>
+                </div>
+            </div>
+
+            <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2024/macro2_2024.pdf" 
+                           data-title="金曜2限_マクロ経済学2_2024">
+                    <span class="exam-label">2024年度 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2024/macro2_2024.pdf', '金曜2限 マクロ経済学2 (2024)', true, this)">別タブ</a>
+                </div>
+            </div>
+
+            <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2023/macro2_2023.pdf" 
+                           data-title="金曜2限_マクロ経済学2_2023">
+                    <span class="exam-label">2023年度 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2023/macro2_2023.pdf', '金曜2限 マクロ経済学2 (2023)', true, this)">別タブ</a>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 金曜 3限（複数科目） -->
+    <div class="period-card">
+        <div class="period-header">
+            <span class="period-badge">3限</span>
+        </div>
+        <!-- 科目1 -->
+        <div class="subject-group">
+        <div class="subject-header">
+            <h3 class="subject-name">コーポレートファイナンス</h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+                <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2025/corp_finance_2025.pdf" 
+                           data-title="金曜3限_コーポレートファイナンス_2025">
+                    <span class="exam-label">2025年度 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2025/corp_finance_2025.pdf', '金曜3限 コーポレートファイナンス (2025)', true, this)">別タブ</a>
+                </div>
+            </div>
+
+            <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2023/corp_finance_2023.pdf" 
+                           data-title="金曜3限_コーポレートファイナンス_2023">
+                    <span class="exam-label">2023年度 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2023/corp_finance_2023.pdf', '金曜3限 コーポレートファイナンス (2023)', true, this)">別タブ</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <!-- 科目2 -->
+        <div class="subject-group">
+            <div class="subject-header">
+            <h3 class="subject-name">都市経済学<span class="note-text">2025年度より教員の変更あり&常設化</span></h3>
+            <!-- 💡ヒントボタン -->
+            <button type="button" class="hint-toggle-btn" aria-expanded="false" title="ヒントを表示">💡</button>
+        </div>
+        <!-- 💡ヒントコンテンツ（初期状態は非表示） -->
+        <div class="hint-box" hidden>
+            <p>【過去の試験傾向】</p>
+            <p></p>
+        </div>
+            <div class="exam-list">
+               <div class="exam-item">
+                <!-- 左側のラベルとチェックボックス -->
+                <label class="exam-label-group">
+                    <input type="checkbox" class="exam-checkbox" 
+                           data-file="2025/tosi_keizai_2025.pdf" 
+                           data-title="金曜3限_都市経済学_2025">
+                    <span class="exam-label">2025年度 期末試験</span>
+                </label>
+                <!-- 右側の別タブボタン -->
+                <div class="exam-links">
+                    <a href="javascript:void(0)" class="download-btn" onclick="viewPdf('2025/tosi_keizai_2025.pdf', '金曜3限 都市経済学 (2025)', true, this)">別タブ</a>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 金曜 4限（該当なし） -->
+    <div class="period-card empty-period">
+        <div class="period-header">
+            <span class="period-badge">4限</span>
+            <span class="empty-text">該当する過去問はありません</span>
+        </div>
+    </div>
+
+    <!-- 金曜 5限（該当なし） -->
+    <div class="period-card empty-period">
+        <div class="period-header">
+            <span class="period-badge">5限</span>
+            <span class="empty-text">該当する過去問はありません</span>
+        </div>
+    </div>
+</section>
+</div>
+
+<div class="term-tabs">
+    <button class="term-tab active" onclick="switchTerm('zenki')">前期</button>
+    <button class="term-tab" onclick="switchTerm('kouki')">後期</button>
+</div>
+
+</main>
 
     <footer class="main-footer">
         <p>&copy; 2026 経済学部同好会常任委員会</p>
-        <p class="version-info">ver. 1.0.0</p>
+        <p class="version-info">ver. 2.0.0</p>
     </footer>
 </body>
 </html>

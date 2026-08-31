@@ -85,72 +85,458 @@
     border-left: 4px solid #f56565;
 }
 
-/* レイアウト：左にリスト、右にプレビュー */
+/* ==========================================
+   全体レイアウト（縦長カード型UI）
+   ========================================== */
+
 .past-exam-layout {
+    max-width: 800px; /* PCでも横に伸びすぎない見やすい幅 */
+    margin: 0 auto;
+    padding: 20px 15px;
+}
+
+/* ヘッダー＆注意書きエリア */
+.archive-header {
+    margin-bottom: 30px;
+}
+
+.archive-header h1 {
+    font-size: 1.8rem;
+    color: #0f172a;
+    margin-bottom: 15px;
+}
+
+.notice-box {
+    background: #eff6ff;
+    border-left: 4px solid #3b82f6;
+    border-radius: 0 8px 8px 0;
+    padding: 15px 20px;
+}
+
+.notice-box ul {
+    margin: 0;
+    padding-left: 18px;
+    color: #1e3a8a;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+/* 学期切替タブの枠組 */
+.term-tabs {
     display: flex;
-    gap: 30px;
-    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 8px;
 }
 
-.list-section {
-    flex: 1; /* リスト側の幅 */
+/* タブボタン */
+.term-tab {
+    padding: 10px 24px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #64748b;
+    background: #f1f5f9;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.preview-section {
-    flex: 2; /* プレビュー側の幅（広め） */
-    position: sticky;
-    top: 100px; /* スクロールしてもプレビューがついてくるように */
-    background: #fff;
-    padding: 15px;
+.term-tab:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
+/* アクティブ（選択中）のタブ */
+.term-tab.active {
+    background: #3b82f6;
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+}
+
+/* 学期コンテンツ表示切り替え */
+.term-content {
+    display: none; /* デフォルトは非表示 */
+}
+
+.term-content.active {
+    display: block; /* activeクラスがついた方だけ表示 */
+}
+
+/* ==========================================
+   時間割・カードリストエリア
+   ========================================== */
+
+.day-section {
+    margin-bottom: 35px;
+}
+
+/* 曜日ヘッダー */
+.day-title {
+    font-size: 1.2rem;
+    color: #ffffff;
+    background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+    padding: 10px 16px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
+
+/* コマごとのカード */
+.period-card {
+    display: flex;
+    flex-direction: column; /* 💡 縦並びに変更 */
+    align-items: stretch;   /* 💡 幅いっぱいに広げる */
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    background: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 10px;
-    height: 80vh;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 
-/* 縦並びのリストアイテム */
-.exam-item-row {
+.period-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px; /* 💡 下の科目名との間に少し余白を作る */
+}
+
+/* コマ数バッジ（1限、2限など） */
+.period-badge {
+    background-color: #f1f5f9;
+    color: #475569;
+    font-size: 0.85rem;
+    font-weight: bold;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+}
+
+/* 科目ごとのブロック */
+.subject-group {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 2px solid #e2e8f0;
+}
+
+/* 最初の科目の上の線は消す */
+.subject-group:first-of-type {
+    margin-top: 8px;
+    padding-top: 0;
+    border-top: none;
+}
+
+/* ★改良：科目名とボタンを横並びにする親コンテナ */
+.subject-header {
+    display: flex;
+    align-items: center; /* 上下中央揃え */
+    gap: 6px;            /* 文字とボタンの間隔 */
+    margin-bottom: 8px;  /* ここで下の要素（ヒントや試験リスト）との余白を取る */
+}
+
+/* ★改良：科目名ラベル */
+.subject-name {
+    font-size: 1.05rem;
+    color: #1e3a8a;
+    font-weight: 700;
+    margin: 0;           /* ★下の余白(8px)を解消して上下のずれを防止 */
+    display: inline-flex; /* ★内容分の幅だけ取るように修正 */
+    align-items: center;
+}
+
+/* 科目名の左側に小さな青アクセントを付与 */
+.subject-name::before {
+    content: "";
+    display: inline-block;
+    width: 4px;
+    height: 1em;
+    background-color: #3b82f6;
+    margin-right: 8px;
+    border-radius: 2px;
+    flex-shrink: 0;     /* 青線の潰れ防止 */
+}
+
+/* 💡ボタンのスタイル */
+.hint-toggle-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 2px 4px;
+    border-radius: 50%;
+    transition: transform 0.2s ease, background-color 0.2s;
+    line-height: 1;
+    display: inline-flex;  /* ボタン自体の高さ・配置を安定させる */
+    align-items: center;
+    justify-content: center;
+}
+
+.hint-toggle-btn:hover {
+    background-color: rgba(255, 215, 0, 0.2);
+    transform: scale(1.15);
+}
+
+/* 💡ヒントの表示ボックス */
+.hint-box {
+    margin: 8px 0 12px 0;
+    padding: 10px 14px;
+    background-color: #fffde7;
+    border-left: 4px solid #fbc02d;
+    border-radius: 4px;
+    font-size: 0.88rem;
+    color: #424242;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.hint-box p {
+    margin: 0 0 4px 0;
+}
+
+.hint-box p:last-child {
+    margin-bottom: 0;
+}
+
+.hint-box[hidden] {
+    display: none !important;
+}
+
+/* 過去問がないコマ */
+.empty-period {
+    background-color: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    box-shadow: none;
+}
+
+.empty-period:hover {
+    transform: none;
+    box-shadow: none;
+    background-color: #f8fafc;
+}
+
+.empty-text {
+    color: #94a3b8;
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+/* 過去問1件ごとの行（テキストとボタンを横並びにする） */
+.exam-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 20px;
-    margin-bottom: 10px;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: transform 0.1s;
+    padding: 8px 12px;
+    background-color: #f8fafc;
+    border-radius: 6px;
+    margin-bottom: 6px;
 }
 
-.exam-item-row:hover {
-    background: #edf2f7;
-    transform: scale(1.01);
+.exam-item:last-child {
+    border-bottom: none;
 }
 
-.action-buttons {
+.exam-label {
+    font-size: 0.95rem;
+    color: #334155;
+}
+
+/* 右側ボタンエリア */
+.exam-links {
     display: flex;
-    gap: 10px;
+    align-items: center;
 }
 
-/* プレビュー用iframe */
+/* ==========================================
+   アクションボタン
+   ========================================== */
+/* ボタンを囲むコンテナも横並びを維持 */
+.exam-links {
+    display: flex;
+    gap: 8px;           /* ボタン同士の間隔 */
+    align-items: center;
+    flex-shrink: 0;     /* 画面が狭くなってもボタンが潰れないように設定 */
+}
+
+/* プレビューボタン */
+.view-btn {
+    background: #3b82f6;
+    color: #ffffff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.view-btn:hover {
+    background: #2563eb;
+}
+
+/* 別タブで開くボタン */
+.download-btn {
+    display: inline-block;
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    padding: 7px 13px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.download-btn:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
+/* ==========================================
+   共通プレビュー表示エリア
+   ========================================== */
+
+.preview-section {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 450px;
+    height: 550px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    padding: 15px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* 非表示状態（JSでクラス付け外し） */
+.preview-section.hidden {
+    display: none;
+}
+
+.preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.preview-header h3 {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #1e293b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: #64748b;
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.close-btn:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+}
+
 .iframe-wrapper {
-    height: calc(100% - 40px);
+    flex: 1;
     width: 100%;
 }
 
 #pdf-preview-frame {
     width: 100%;
     height: 100%;
-    border-radius: 5px;
+    border: none;
+    border-radius: 6px;
 }
 
-/* スマホ対応：画面が狭いときは縦に並べる */
-@media (max-width: 900px) {
-    .past-exam-layout {
+/* モバイル対応：画面が狭いときは画面下部に全幅固定 */
+@media (max-width: 600px) {
+    .period-card {
         flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
     }
-    .preview-section {
+
+    .exam-links {
         width: 100%;
-        height: 500px;
-        position: static;
+        justify-content: flex-end;
     }
+
+    .preview-section {
+        width: calc(100% - 20px);
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+        height: 70vh;
+    }
+}
+
+/* 科目名の中の補足テキスト（偶数年、奇数年など） */
+.note-text {
+    font-size: 0.85rem;
+    color: #64748b;
+    font-weight: normal;
+    margin-left: 6px;
+}
+
+.bulk-download-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f1f5f9;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    position: sticky;
+    top: 10px; /* スクロールしても押しやすいように上部固定 */
+    z-index: 100;
+}
+
+.exam-label-group {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* チェックボックスとテキストの間隔 */
+    cursor: pointer;
+    user-select: none;
+}
+
+/* チェックボックスの大きさ・マウスポインター */
+.exam-checkbox {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #2563eb; /* チェック時のメインカラー */
+}
+
+
+
+.bulk-btn {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.bulk-btn:disabled {
+    background-color: #94a3b8;
+    cursor: not-allowed;
 }
